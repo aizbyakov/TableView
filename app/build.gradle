@@ -25,16 +25,20 @@
 apply plugin: 'com.android.application'
 
 android {
+    namespace "com.evrencoskun.tableviewsample"
+
     compileSdkVersion compile_sdk_version
+    buildToolsVersion build_tools_version
 
     defaultConfig {
-        applicationId 'com.evrencoskun.tableviewsample'
+        versionName '1.0'
+        versionCode 1
         minSdkVersion min_sdk_version
         targetSdkVersion target_sdk_version
-        versionCode 1
-        versionName '1.0'
-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+
         vectorDrawables.useSupportLibrary = true
+
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 
     buildTypes {
@@ -59,6 +63,15 @@ android {
 }
 
 dependencies {
+    constraints {
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0") {
+            because("kotlin-stdlib-jdk7 is now a part of kotlin-stdlib")
+        }
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0") {
+            because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
+        }
+    }
+
     implementation project(path: ':tableview')
 
     implementation "androidx.annotation:annotation:$androidx_annotation_version"
@@ -66,3 +79,29 @@ dependencies {
     implementation "androidx.fragment:fragment:$androidx_fragment_version"
     implementation "androidx.recyclerview:recyclerview:$androidx_recyclerview_version"
 }
+
+task cleanArtifacts(type: Delete) {
+    delete fileTree(dir: "$artifactsDirectory" , include: "**/$rootProject.name*.apk")
+}
+
+task copyArtifacts(dependsOn: cleanArtifacts) {
+    def sourceRoot = "$buildDir/outputs/apk/"
+
+    doFirst{
+        println "SOURCE: $sourceRoot"
+        println "TARGET: $artifactsDirectory"
+        println ""
+
+        copy {
+            from(fileTree(sourceRoot).files)
+            into(artifactsDirectory)
+            include('*.apk')
+
+            eachFile {
+                println "FILE: $it.relativeSourcePath -> $it.relativePath"
+            }
+        }
+    }
+}
+
+build.finalizedBy(copyArtifacts)

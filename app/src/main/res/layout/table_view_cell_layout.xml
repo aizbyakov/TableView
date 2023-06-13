@@ -29,13 +29,14 @@
               android:layout_height="@dimen/cell_height"
               android:background="@color/cell_background_color"
               android:gravity="center"
-              android:orientation="vertical">
+              android:orientation="horizontal">
 
 
     <TextView
         android:id="@+id/cell_data"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_weight="1"
         android:layout_gravity="center_vertical"
         android:layout_marginEnd="10dp"
         android:layout_marginStart="10dp"
@@ -45,6 +46,14 @@
         android:textSize="@dimen/text_size"
         android:visibility="visible"
         tools:text="Cell Data"/>
+
+    <ImageView
+        android:id="@+id/cell_additional_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@android:drawable/ic_popup_reminder"
+        android:clickable="true"
+        tools:ignore="ContentDescription" />
 
 </LinearLayout>
 
