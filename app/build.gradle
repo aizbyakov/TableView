@@ -23,83 +23,83 @@
  */
 
 apply plugin: 'com.android.application'
+apply from: 'signUtils.gradle'
 
 android {
     namespace "com.evrencoskun.tableviewsample"
 
-    compileSdkVersion compile_sdk_version
-    buildToolsVersion build_tools_version
+    compileSdkVersion PRJ_COMPILE_SDK_VERSION
+    buildToolsVersion PRJ_BUILD_TOOLS_VERSION
 
     defaultConfig {
-        versionName '1.0'
-        versionCode 1
-        minSdkVersion min_sdk_version
-        targetSdkVersion target_sdk_version
+        minSdkVersion PRJ_MIN_SDK_VERSION
+        targetSdkVersion PRJ_TARGET_SDK_VERSION
 
-        vectorDrawables.useSupportLibrary = true
+        versionCode PRJ_VERSION_CODE
+        versionName PRJ_VERSION_NAME
 
-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    def releaseSignConfig = getSignConfig('RELEASE', "$rootProject.rootDir/../keystore/keystore.properties")
+
+    signingConfigs {
+        if (releaseSignConfig) release releaseSignConfig
     }
 
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (releaseSignConfig) signingConfig signingConfigs.release
         }
     }
-
     compileOptions {
-        sourceCompatibility = java_version
-        targetCompatibility = java_version
-    }
-
-    buildFeatures {
-        buildConfig = false
-    }
-
-    lintOptions {
-        abortOnError false
+        sourceCompatibility JAVA_SRC_COMPATIBILITY
+        targetCompatibility JAVA_TARGET_COMPATIBILITY
     }
 }
 
 dependencies {
-    constraints {
-        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0") {
-            because("kotlin-stdlib-jdk7 is now a part of kotlin-stdlib")
-        }
-        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0") {
-            because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
-        }
-    }
+    implementation project(':tableview')
 
-    implementation project(path: ':tableview')
-
-    implementation "androidx.annotation:annotation:$androidx_annotation_version"
-    implementation "androidx.appcompat:appcompat:$androidx_appcompat_version"
-    implementation "androidx.fragment:fragment:$androidx_fragment_version"
-    implementation "androidx.recyclerview:recyclerview:$androidx_recyclerview_version"
+    implementation "androidx.recyclerview:recyclerview:1.3.2"
 }
 
 task cleanArtifacts(type: Delete) {
-    delete fileTree(dir: "$artifactsDirectory" , include: "**/$rootProject.name*.apk")
+    delete fileTree(dir: "$ARTIFACTS_DIRECTORY", include: "**/$rootProject.name*.apk")
+    delete fileTree(dir: "$ARTIFACTS_DIRECTORY", include: "**/$rootProject.name*.aab")
 }
 
 task copyArtifacts(dependsOn: cleanArtifacts) {
-    def sourceRoot = "$buildDir/outputs/apk/"
-
-    doFirst{
-        println "SOURCE: $sourceRoot"
-        println "TARGET: $artifactsDirectory"
+    doFirst {
+        println "APK"
         println ""
 
-        copy {
-            from(fileTree(sourceRoot).files)
-            into(artifactsDirectory)
-            include('*.apk')
+        copyArtifactsImpl("$buildDir/outputs/")
 
-            eachFile {
-                println "FILE: $it.relativeSourcePath -> $it.relativePath"
-            }
+        println ""
+        println ""
+
+        println "BUNDLE"
+        println ""
+
+        copyArtifactsImpl("$buildDir/intermediates/apk/")
+    }
+}
+
+ext.copyArtifactsImpl = { sourceRoot ->
+    println "SOURCE: $sourceRoot"
+    println "TARGET: $ARTIFACTS_DIRECTORY"
+    println ""
+
+    copy {
+        from(fileTree(sourceRoot).files)
+        into(ARTIFACTS_DIRECTORY)
+        include('*.apk', '*.aab')
+
+        eachFile {
+            println "FILE: $it.relativeSourcePath -> $it.relativePath"
         }
     }
 }

@@ -1,9 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.fragment.app.FragmentContainerView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_main"
-    android:name="com.evrencoskun.tableviewsample.MainFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:layout="@layout/fragment_main" />
+    android:background="@color/bg_line"
+    android:focusableInTouchMode="true">
 
+    <LinearLayout
+        android:id="@+id/activity_main__table_test_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/activity_main__search_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:weightSum="100">
+
+            <EditText
+                android:id="@+id/activity_main__query_string"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="40"
+                android:inputType="textNoSuggestions"
+                android:importantForAutofill="no"
+                tools:ignore="LabelFor" />
+
+            <Spinner
+                android:id="@+id/activity_main__mood_spinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="30"
+                android:background="@android:color/transparent"
+                android:entries="@array/moods" />
+
+            <Spinner
+                android:id="@+id/activity_main__gender_spinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="30"
+                android:background="@android:color/transparent"
+                android:entries="@array/gender" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:weightSum="100">
+
+            <ImageButton
+                android:id="@+id/activity_main__previous_button"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_previous"
+                android:importantForAccessibility="no" />
+
+            <EditText
+                android:id="@+id/activity_main__page_number_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="20"
+                android:inputType="number"
+                android:importantForAutofill="no"
+                tools:ignore="LabelFor" />
+
+            <ImageButton
+                android:id="@+id/activity_main__next_button"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_next"
+                android:importantForAccessibility="no" />
+
+            <TextView
+                android:id="@+id/activity_main__table_details"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="50" />
+
+            <Spinner
+                android:id="@+id/activity_main__items_per_page_spinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="30"
+                android:background="@android:color/transparent"
+                android:entries="@array/items_per_page" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <com.evrencoskun.tableview.TableView
+        android:id="@+id/activity_main__tableview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/activity_main__table_test_container"
+        app:allow_click_inside_cell="true"
+        app:allow_click_inside_column_header="true"
+        app:allow_click_inside_row_header="true">
+
+    </com.evrencoskun.tableview.TableView>
+</RelativeLayout>

@@ -22,10 +22,8 @@
  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  ~ SOFTWARE.
   -->
-<LinearLayout
-    android:id="@+id/column_header_container"
+<LinearLayout android:id="@+id/column_header_container"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="@dimen/cell_height"
@@ -47,7 +45,7 @@
 
             <TextView
                 android:id="@+id/column_header_textView"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_weight="4"
@@ -66,7 +64,8 @@
                 android:paddingRight="-5dp"
                 android:scaleType="fitXY"
                 android:visibility="gone"
-                app:srcCompat="@drawable/ic_down"/>
+                android:src="@drawable/ic_down"
+                android:importantForAccessibility="no"/>
         </LinearLayout>
 
         <View
