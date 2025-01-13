@@ -35,4 +35,10 @@ public class ColumnHeader extends Cell {
     public ColumnHeader(@NonNull String id, @Nullable String data) {
         super(id, data);
     }
+
+    @NonNull
+    @Override
+    public String getId() {
+        return super.getId();
+    }
 }

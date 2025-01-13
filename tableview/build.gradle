@@ -5,19 +5,18 @@ def libName = 'tableview'
 android {
     namespace "com.evrencoskun.tableview"
 
-    compileSdkVersion PRJ_COMPILE_SDK_VERSION
-    buildToolsVersion PRJ_BUILD_TOOLS_VERSION
-
     defaultConfig {
-        minSdkVersion PRJ_MIN_SDK_VERSION
-        targetSdkVersion PRJ_TARGET_SDK_VERSION
+        versionCode androidApplicationVersionCode
+        versionName androidApplicationVersionName
 
-        versionCode PRJ_VERSION_CODE
-        versionName PRJ_VERSION_NAME
+        minSdk androidApplicationMinSdkVersion
+        compileSdk androidApplicationCompileSdkVersion
+        targetSdk androidApplicationTargetSdkVersion
 
         archivesBaseName = "$libName-$versionName"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
     }
 
     buildTypes {
@@ -28,41 +27,50 @@ android {
         debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
             testCoverageEnabled true
         }
     }
+
     compileOptions {
-        sourceCompatibility JAVA_SRC_COMPATIBILITY
-        targetCompatibility JAVA_TARGET_COMPATIBILITY
+        sourceCompatibility = javaSourceCompatibility
+        targetCompatibility = javaTargetCompatibility
+    }
+
+    buildFeatures {
+        buildConfig true
     }
 }
 
 dependencies {
     implementation "androidx.recyclerview:recyclerview:1.3.2"
 
-    androidTestImplementation "androidx.test.espresso:espresso-core:3.5.1"
-    androidTestImplementation "androidx.test.ext:junit:1.1.5"
-    androidTestImplementation "androidx.test:rules:1.5.0"
-
     testImplementation 'junit:junit:4.13.2'
+
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.6.1"
+    androidTestImplementation "androidx.test.ext:junit:1.2.1"
+    androidTestImplementation "androidx.test:rules:1.6.1"
 }
 
-task cleanArtifacts(type: Delete) {
-    delete fileTree(dir: "$ARTIFACTS_DIRECTORY" , include: "**/${libName}*.aar")
-    delete fileTree(dir: "$ARTIFACTS_DIRECTORY" , include: "**/${libName}*sources.jar")
+tasks.register("cleanArtifacts", Delete) {
+    delete fileTree(dir: "$artifactsDirectory" , include: "**/${libName}*.aar")
+    delete fileTree(dir: "$artifactsDirectory" , include: "**/${libName}*sources.jar")
 }
 
-task copyArtifacts(dependsOn: cleanArtifacts) {
-    def sourceRoot = "$buildDir/outputs/aar"
+clean.finalizedBy(cleanArtifacts)
 
-    doFirst{
+tasks.register("copyArtifacts") {
+    def buildDirectory = layout.buildDirectory.getAsFile().get();
+    def sourceRoot = "$buildDirectory/outputs/aar"
+
+    doFirst {
         println "SOURCE: $sourceRoot"
-        println "TARGET: $ARTIFACTS_DIRECTORY"
+        println "TARGET: $artifactsDirectory"
         println ""
 
         copy {
             from(fileTree(sourceRoot).files)
-            into(ARTIFACTS_DIRECTORY)
+            into(artifactsDirectory)
             include("*.aar")
 
             eachFile {
@@ -74,9 +82,10 @@ task copyArtifacts(dependsOn: cleanArtifacts) {
 
 build.finalizedBy(copyArtifacts)
 
-task generateSourcesJar() {
+
+tasks.register("generateSourcesJar") {
     def sourcesRoot = "$projectDir/src/main/java"
-    def cmd = "jar cvf \"$ARTIFACTS_DIRECTORY/$archivesBaseName-sources.jar\" -C \"$sourcesRoot/\" com"
+    def cmd = "jar cvf \"$artifactsDirectory/$archivesBaseName-sources.jar\" -C \"$sourcesRoot/\" com"
 
     doFirst {
         println "GENERATE SOURCES JAR"

@@ -120,21 +120,18 @@ public class TableViewAdapter extends AbstractTableAdapter<ColumnHeader, RowHead
      * @see #onCreateCellViewHolder(ViewGroup, int) ;
      */
     @Override
-    public void onBindCellViewHolder(@NonNull AbstractViewHolder holder, @Nullable Cell cellItemModel, int
-            columnPosition, int rowPosition) {
+    public void onBindCellViewHolder(@NonNull AbstractViewHolder holder, @Nullable Cell cellItemModel, int columnPosition, int rowPosition) {
 
         switch (holder.getItemViewType()) {
             case MOOD_CELL_TYPE:
                 MoodCellViewHolder moodViewHolder = (MoodCellViewHolder) holder;
 
-                moodViewHolder.cell_image.setImageResource(mTableViewModel.getDrawable((int) cellItemModel
-                        .getData(), false));
+                moodViewHolder.cell_image.setImageResource(mTableViewModel.getDrawable((int) cellItemModel.getData(), false));
                 break;
             case GENDER_CELL_TYPE:
                 GenderCellViewHolder genderViewHolder = (GenderCellViewHolder) holder;
 
-                genderViewHolder.cell_image.setImageResource(mTableViewModel.getDrawable((int)
-                        cellItemModel.getData(), true));
+                genderViewHolder.cell_image.setImageResource(mTableViewModel.getDrawable((int) cellItemModel.getData(), true));
                 break;
             default:
                 // Get the holder to update cell item text
@@ -159,8 +156,7 @@ public class TableViewAdapter extends AbstractTableAdapter<ColumnHeader, RowHead
         // TODO: check
         //Log.e(LOG_TAG, " onCreateColumnHeaderViewHolder has been called");
         // Get Column Header xml Layout
-        View layout = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.table_view_column_header_layout, parent, false);
+        View layout = LayoutInflater.from(parent.getContext()).inflate(R.layout.table_view_column_header_layout, parent, false);
 
         // Create a ColumnHeader ViewHolder
         return new ColumnHeaderViewHolder(layout, getTableView());
@@ -272,12 +268,13 @@ public class TableViewAdapter extends AbstractTableAdapter<ColumnHeader, RowHead
 
     @Override
     public int getCellItemViewType(int column) {
-
         // The unique ID for this type of cell item
         // If you have different items for Cell View by X (Column) position,
         // then you should fill this method to be able create different
         // type of CellViewHolder on "onCreateCellViewHolder"
-        switch (column) {
+//        var ch = (ColumnHeader)getColumnHeaderRecyclerViewAdapter().getItems().get(column);
+        var ch = mTableViewModel.getColumnHeaderList().get(column);
+        switch (Integer.parseInt(ch.getId())) {
             case TableViewModel.MOOD_COLUMN_INDEX:
                 return MOOD_CELL_TYPE;
             case TableViewModel.GENDER_COLUMN_INDEX:
